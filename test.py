@@ -35,7 +35,7 @@ def contColunms(col):
 
 
 def initiateDict():
-    filename = "colunm"
+    filename = "columns"
 
     with open(filename) as f:
         content = f.readlines()
