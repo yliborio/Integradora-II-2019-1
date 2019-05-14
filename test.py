@@ -39,14 +39,25 @@ def initiateDict():
 
     with open(filename) as f:
         content = f.readlines()
-    k = ""
+    cl = []
     for line in content:
-        k+=line
-    cl = k.split("| ")
+        cl += [line.replace("|","").replace(" ","").replace('\n',"")]
     for x in cl:
-        for u in x.split(" "):
-            d[u] = contColunms(u)
-    
+        d[x] = contColunms(x)
+
+
+def getMostUsed(n):
+    lst = sorted(d.items(), key = lambda kv:(kv[1], kv[0]))
+    res = []
+    i = len(lst) -1
+    while(n>0):
+        res += [lst[i]]
+        i -= 1
+        if(i < 0): return []
+        n -= 1
+    return res
+
+
 
 if __name__ == "__main__":
     readLog()
@@ -55,10 +66,14 @@ if __name__ == "__main__":
     for key in d:
         if d[key] > 0:
             hz+=1
-        if(len(key) > 2):
-            print(key, d[key])
+        print(key, d[key])
     print("Used", hz, "columns")
-    #print(s)
+    print(getMostUsed(30))
+     
 
 
-#talvez utilizar as 20 mais frequentes??? 
+
+
+
+
+
