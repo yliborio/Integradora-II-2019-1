@@ -1,5 +1,16 @@
 d = dict()
 s = ""
+
+tables = {
+    'c' :  'customer',
+    'l' : 'lineitem',
+    'n' : 'nation',
+    'o' : 'orders',
+    'p' : 'part',
+    'ps': 'partsupp',
+    'r' : 'region',
+    's' : 'supplier'
+}
 def readLog():
     global s
     filename = "logViews"
@@ -9,7 +20,7 @@ def readLog():
         s+=line
 
 def separateWhere(query):
-    search = query.split("where")
+    search = query.split("from")
     if(len(search) == 1 ):
         return ""
     search = search[1:] # search[0] contem o que veio antes do primeiro 
@@ -46,19 +57,22 @@ def initiateDict():
         d[x] = contColunms(x)
 
 
-def getMostUsed(n):
-    lst = sorted(d.items(), key = lambda kv:(kv[1], kv[0]))
+def getUsedAtLeast(n):
     res = []
-    i = len(lst) -1
-    while(n>0):
-        res += [lst[i]]
-        i -= 1
-        if(i < 0): return []
-        n -= 1
+    for x in d:
+        if d[x] >= n:
+            res += [x]
     return res
 
+def createStates(lst):
+    t = dict()
+    for i in lst:
+        key = tables[i.split("_")[0]]
+        if key not in t: t[key] = [i] 
+        else : t[key] += [i]
+    return t 
 
-
+    
 if __name__ == "__main__":
     readLog()
     initiateDict()
@@ -68,12 +82,9 @@ if __name__ == "__main__":
             hz+=1
         print(key, d[key])
     print("Used", hz, "columns")
-    print(getMostUsed(30))
-     
+    lst = getUsedAtLeast(3)
+    print(createStates(lst))
 
 
 
-
-
-
-
+    
