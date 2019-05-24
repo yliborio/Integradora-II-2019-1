@@ -5,7 +5,7 @@ class States:
         self.n_MAX = n
         self.d = dict()
         
-
+    c = 0
     tables = {
         'c' :  'customer',
         'l' : 'lineitem',
@@ -25,15 +25,25 @@ class States:
             s += line
         return s
 
-    def separateWhere(self,query):
-        search = query.split("from")
-        if(len(search) == 1 ):
-            return ""
-        search = search[1:] # search[0] contem o que veio antes do primeiro 
-        res = ""            # where 
-        for p in search:
-            res+=p
-        return res
+    def getSelects(self,query):
+        search = query.split(" ")
+        i = 0
+        res = []
+        while i < len(search):
+            if search[i] == "select":
+                posj = i 
+                for j in range(i+1,len(search)):
+                    if(search[j] == "from"):
+                        posj = j
+                        break
+                res += search[i:posj+1]
+                self.c += 1
+                i = posj
+            i += 1
+        ret = ""
+        for p in res:
+            ret += p + " "
+        return ret
 
     t = {
          'customer': ['c_custkey', 'c_nationkey'],
@@ -48,15 +58,14 @@ class States:
 
     def contColunms(self,s,col):
         views = s.split("|\n|") #separa as linhas consultas 
+        print(len(views))
         cont = 0
         for query in views:
-            result = self.separateWhere(query) # descarta as colunas utilizadas
-            if len(result) == 0:          # no select
+            result = self.getSelects(query) # pega as colunas utilizadas nos selects
+            #print(result)     
+            if len(result) == 0:          
                 continue
-            ax = result.split("`") # cada coluna esta entre "`"s
-            for y in ax:           # ex: `l_lineitem`
-                if col in y:
-                    cont+=1
+            cont += len(result.split(col)) -1
         return cont
 
 
@@ -94,8 +103,14 @@ class States:
         return self.createStates(lst)
 
 if __name__ == "__main__":
-    S = States(5)
-    print(S.getStates())
+    S = States(1)
+    ax = S.getStates()
+    cont = 0
+    for x in ax:
+        cont += len(ax[x])
+    print(cont)
+    print(S.c)
+    print(S.d)
 
 
 
