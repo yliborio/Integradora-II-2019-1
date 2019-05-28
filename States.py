@@ -53,10 +53,8 @@ class States:
             result = self.separateWhere(query) # descarta as colunas utilizadas
             if len(result) == 0:          # no select
                 continue
-            ax = result.split("`") # cada coluna esta entre "`"s
-            for y in ax:           # ex: `l_lineitem`
-                if col in y:
-                    cont+=1
+            if col in result:
+                cont += 1
         return cont
 
 
@@ -94,10 +92,12 @@ class States:
         return self.createStates(lst)
 
 if __name__ == "__main__":
-    S = States(5)
+    S = States(3)
     print(S.getStates())
+    print(S.d)
 
 
 
 
     
+
